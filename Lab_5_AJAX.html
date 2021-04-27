@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Login</title>
+        <script>
+        var a = "User Name";
+        var pd = "Password";
+        function val()
+        {
+            document.getElementById("pg").innerHTML = a;
+        }
+        function Check()
+        {
+            fnCheck2();
+            fnCheck1();
+        }
+        function fnCheck1()
+        {
+            var xttp = new XMLHttpRequest();
+            xttp.onreadystatechange = function() 
+            {
+                if (this.readyState == 4 && this.status == 200) 
+                {
+                    fntask1(this);
+                }
+            };
+            xttp.open("GET", "http://127.0.0.1/Proj.xml", true);
+            xttp.send();
+        }
+        function fnCheck2()
+        {
+            var xttp = new XMLHttpRequest();
+            xttp.onreadystatechange = function() 
+            {
+                if (this.readyState == 4 && this.status == 200) 
+                {
+                    fntask2(this);
+                }
+            };
+            xttp.open("GET", "http://127.0.0.1/login.json", true);
+            xttp.send();
+        }
+        function fntask2(jsonObj)
+        {
+            var jsonDoc = jsonObj.responseText;
+            var myObj=JSON.parse(jsonDoc);
+            var x = document.getElementById("regno").value;
+            for(i in myObj.login)
+            {
+                if(myObj.login[i].regNo == x)
+                {
+                    window.a = myObj.login[i].uname;
+                    window.pd = myObj.login[i].pwd;
+                }
+            }
+        }
+        function fntask1(xml)
+        {
+            var xmlDoc = xml.responseXML;
+            var x = xmlDoc.getElementsByTagName("Student");
+            var rn = document.getElementById("regno");
+            var nm = document.getElementById("name"); 
+            var flag = 0;
+            var r, u, pt, ps;
+            for(i = 0; i < x.length; i++)
+            {
+                if((x[i].getElementsByTagName("RegNo")[0].childNodes[0].nodeValue == rn.value && x[i].getElementsByTagName("Name")[0].childNodes[0].nodeValue == nm.value)==true)
+                {
+                    var t = document.getElementById("tb");
+                    var tr = document.createElement("tr");
+                    var td = document.createElement("td");
+                    td.appendChild(document.createTextNode(x[i].getElementsByTagName("RegNo")[0].childNodes[0].nodeValue));
+   	                tr.appendChild(td);
+                    var td = document.createElement("td"); 
+                    td.appendChild(document.createTextNode(x[i].getElementsByTagName("ProjectTitle")[0].childNodes[0].nodeValue));
+                    tr.appendChild(td)
+                    var td = document.createElement("td"); 
+                    td.appendChild(document.createTextNode(x[i].getElementsByTagName("ProjectGuide")[0].childNodes[0].nodeValue));
+	                tr.appendChild(td);
+                    var td = document.createElement("td");  
+                    td.appendChild(document.createTextNode(a));
+                    tr.appendChild(td);   
+                    t.appendChild(tr);
+                    alert("Password will be sent to email provided")
+                    //To Send a mail with the password to the entered email
+                    /*var m = "mailto:"+document.getElementById("email").value+"?subject=Password&body=Your password is "+pd;
+                    window.open(m);*/
+                }
+            }
+        }
+        </script>
+    </head>
+    <body>
+        <h1>Login</h1>
+        <p id="pg"></p>
+        <label for="name">Name : </label><br>
+        <input type="text" id="name" placeholder = "Enter name" required><br>
+        <label for="regno">Register No : </label><br>
+        <input type="text" id="regno" placeholder = "Enter register number" required><br>
+        <label for="email">Email : </label><br>
+        <input type="text" id="email" placeholder = "Enter email" required><br><br>
+        <button type="button" onclick="Check()">Submit</button><br><br>
+        <table border="1" style="border:solid; width: 50%;" id="tb">
+            <tr>
+                <th>Register Number</th>
+                <th>Project Title</th>
+                <th>Project Supervisor</th>
+                <th>User Name</th>
+            </tr>
+        </table>
+    </body>
+</html>
